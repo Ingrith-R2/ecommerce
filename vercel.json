@@ -7,9 +7,9 @@
             "use": "@vercel/node"
         },
         {
-            "src": "uploads//*",
+            "src": "uploads/**/*",
             "use": "@vercel/static"
-        }
+        }      
     ],
     
     "routes": [

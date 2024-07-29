@@ -46,7 +46,7 @@ app.use(fileUpload({
     // Establecer archivo temporales
     useTempFiles: true,
     // Especificar el directorio
-    tempFileDir: './uploads'
+    tempFileDir: './tmp'
 }));
 
 

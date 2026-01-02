@@ -14,6 +14,16 @@ connection()
 
 
 // Iniciar el servidor en el puerto 
-app.listen(app.get('port'),()=>{
+const express = require("express");
+const app = express();
+
+app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.json({ message: "API funcionando" });
+});
+
+module.exports = app;
+/*app.listen(app.get('port'),()=>{
     console.log(`Server on port ${app.get('port')}`);
-})
+})*/

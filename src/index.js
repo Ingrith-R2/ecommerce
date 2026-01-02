@@ -15,7 +15,6 @@ connection()
 
 // Iniciar el servidor en el puerto 
 const express = require("express");
-module.exports = app;
 const app = express();
 
 app.use(express.json());

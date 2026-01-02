@@ -2,7 +2,7 @@
 require('dotenv').config()
 
 // Importación de la variable app
-const app = require('./server.js')
+const app = require('./src/server.js')
 // Importación de la función connection
 const connection = require('./database.js')
 
@@ -16,6 +16,7 @@ connection()
 // Iniciar el servidor en el puerto 
 const express = require("express");
 const app = express();
+
 
 app.use(express.json());
 

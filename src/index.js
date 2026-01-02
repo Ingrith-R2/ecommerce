@@ -2,7 +2,7 @@
 require('dotenv').config()
 
 // Importación de la variable app
-const app = require('./src/server.js')
+const app = require('../server.js')
 // Importación de la función connection
 const connection = require('./database.js')
 

@@ -26,20 +26,21 @@
                     });
                 </script>
                 {{/if}}
+                {{#if isDemo}}
+                <div class="alert alert-info">
+                    <strong><i class="fas fa-flask me-1"></i> Modo demo</strong> — usa estas credenciales de prueba:
+                    <ul class="mb-0 mt-2">
+                        <li>Correo: <code>admin@demo.com</code></li>
+                        <li>Contraseña: <code>demo1234</code></li>
+                    </ul>
+                </div>
+                {{/if}}
                 <form action="/user/login" method="post">
 
-                    <!-- Name input-->
-                    <div class="form-floating mb-3">
-                        <input class="form-control" id="name" type="text" name="name" placeholder="Enter your name..."
-                            data-sb-validations="required" />
-                        <label for="name">Nombre Completo</label>
-                        <div class="invalid-feedback" data-sb-feedback="name:required">Es necesario rellenar este
-                            apartado.</div>
-                    </div>
                     <!-- Email address input-->
                     <div class="form-floating mb-3">
                         <input class="form-control" id="email" type="email" name="email" placeholder="name@example.com"
-                            data-sb-validations="required,email" />
+                            required value="{{#if isDemo}}admin@demo.com{{/if}}" />
                         <label for="email">Correo Electrónico </label>
                         <div class="invalid-feedback" data-sb-feedback="email:required">Es necesario rellenar este
                             apartado.</div>
@@ -48,7 +49,8 @@
                     <!-- Password input-->
                     <div class="form-floating mb-3">
                         <input class="form-control" id="password" type="password" name="password"
-                            placeholder="Enter your password..." data-sb-validations="required" />
+                            placeholder="Enter your password..." required
+                            value="{{#if isDemo}}demo1234{{/if}}" />
                         <label for="password">Contraseña</label>
                         <div class="invalid-feedback" data-sb-feedback="password:required">Su contraseña es necesario.
                         </div>

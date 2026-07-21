@@ -17,14 +17,15 @@
                 <form action="/portafolio/add" method="post" enctype="multipart/form-data">
 
                     <!-- Title input-->
-                    <div class="form-floating mb-3">
-                        <input class="form-control" id="title" type="text" placeholder="Enter your title..." required
+                    <div class="mb-3">
+                        <label for="title" class="form-label fw-bold">Nombre del Producto</label>
+                        <input class="form-control" id="title" type="text" placeholder="Ej. Serum Vitamina C" required
                             name="title" />
-                        <label for="title">Nombre del Producto</label>
                     </div>
 
                     <!-- Category select-->
-                    <div>
+                    <div class="mb-3">
+                        <label for="category" class="form-label fw-bold">Categoría</label>
                         <select class="form-select" id="category" required name="category">
                             <option value="" disabled selected>Selecciona una categoría</option>
                             {{#each categories}}
@@ -33,19 +34,31 @@
                         </select>
                     </div>
 
-                    <!-- Image input-->
-                    <div class="form-floating mb-3">
-                        <input class="form-control" id="image" type="file" placeholder="Select your imagen..." required
-                            name="image" />
-                        <label for="image">Imagén del Producto</label>
+                    <!-- Price input-->
+                    <div class="mb-3">
+                        <label for="price" class="form-label fw-bold">Precio (USD)</label>
+                        <input class="form-control" id="price" type="number" step="0.01" min="0" placeholder="0.00"
+                            required name="price" />
                     </div>
 
+                    <!-- Image input-->
+                    {{#if isDemo}}
+                    <div class="alert alert-info py-2 mb-3">
+                        <i class="fas fa-circle-info me-1"></i>
+                        En modo demo la imagen se genera automáticamente a partir del nombre del producto.
+                    </div>
+                    {{else}}
+                    <div class="mb-3">
+                        <label for="image" class="form-label fw-bold">Imagen del Producto</label>
+                        <input class="form-control" id="image" type="file" required name="image" />
+                    </div>
+                    {{/if}}
+
                     <!-- Description input-->
-                    <div class="form-floating mb-3">
-                        <textarea class="form-control" id="description" type="text"
-                            placeholder="Enter your message here..." style="height: 10rem" required
-                            name="description"></textarea>
-                        <label for="description">Descripción del producto</label>
+                    <div class="mb-3">
+                        <label for="description" class="form-label fw-bold">Descripción del producto</label>
+                        <textarea class="form-control" id="description" rows="4"
+                            placeholder="Describe el producto..." required name="description"></textarea>
                     </div>
 
                     <!-- Submit Button-->
@@ -53,7 +66,7 @@
                 </form>
                 <div class="text-end mt-3">
                     <a href="/portafolios" class="text-decoration-none">
-                        <button class="btn btn-secondary btn-xl d-block w-100" type="submit">Cancelar</button>
+                        <button class="btn btn-secondary btn-xl d-block w-100" type="button">Cancelar</button>
                     </a>
                 </div>
             </div>

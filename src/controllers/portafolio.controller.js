@@ -1,21 +1,30 @@
 
-// Importar el modelo 
+// Importar el modelo
 const Portfolio = require('../models/Portfolio')
-// Importar el método 
+// Importar el método
 const { uploadImage, deleteImage } = require('../config/cloudinary')
 // Importar fs
 const fs = require('fs-extra')
 // Importar el modelo Category
 const Category = require('../models/Category')
+// Modo demo
+const { isDemo } = require('../demo/mode')
+const store = require('../demo/store')
 
 
 
 // MÉTODO PARA LISTAR LOS PORTAFOLIOS
 const renderAllPortafolios = async(req,res)=>{
+    if (isDemo) {
+        return res.render("portafolio/allPortfolios", {
+            portfolios: store.getProducts(),
+            categories: store.getCategories()
+        })
+    }
     // Almacenar todos los portafolios del usuario que inicia sesión en la variable y luego convertir en json
     const portfolios = await Portfolio.find({user:req.user._id}).lean()
     const categories = await Category.find().lean();
-    // Invoocar a la vista y mandar la variable 
+    // Invoocar a la vista y mandar la variable
     res.render("portafolio/allPortfolios",{portfolios, categories})
 }
 
@@ -32,15 +41,26 @@ const renderPortafolio = (req,res)=>{
 
 
 
-// MÉTODO PARA MOSTRAR EL FORMULARIO 
+// MÉTODO PARA MOSTRAR EL FORMULARIO
 const renderPortafolioForm = async (req,res)=>{
+    if (isDemo) {
+        return res.render('portafolio/newFormPortafolio', { categories: store.getCategories() })
+    }
     const categories = await Category.find().lean();
     // INVOCACIÓN DE LA VISTA
     res.render('portafolio/newFormPortafolio', {categories})
 }
 
-// MÉTODO PARA GUARDAR EN LA BDD LO CAPTURADO EN EL FORM 
+// MÉTODO PARA GUARDAR EN LA BDD LO CAPTURADO EN EL FORM
 const createNewPortafolio = async (req,res)=>{
+    // En modo demo no se sube imagen: se genera un SVG a partir del título
+    if (isDemo) {
+        const { title, description, category, price } = req.body
+        if (!title || !category) return res.send("Se requiere el nombre y la categoría")
+        store.createProduct({ title, description, category, price })
+        return res.redirect('/portafolios')
+    }
+
     // Crear una nueva instancia del Portafolio
     const newPortfolio = new Portfolio(req.body)
     // Asociar el usuario que inicia sesión al portafolio
@@ -55,7 +75,7 @@ const createNewPortafolio = async (req,res)=>{
     }
     // Eliminar los archivos temporales
     await fs.unlink(req.files.image.tempFilePath)
-    
+
     // Almacenar en la BDD
     await newPortfolio.save()
     res.redirect('/portafolios')
@@ -69,8 +89,16 @@ const createNewPortafolio = async (req,res)=>{
 
 
 
-// MÉTODO PARA MOSTRAR EL FORMULARIO PARA ACTUALIZAR  
+// MÉTODO PARA MOSTRAR EL FORMULARIO PARA ACTUALIZAR
 const renderEditPortafolioForm = async(req,res)=>{
+    if (isDemo) {
+        const portfolio = store.findProduct(req.params.id)
+        if (!portfolio) return res.redirect('/portafolios')
+        return res.render('portafolio/editPortfolio', {
+            portfolio,
+            categories: store.getCategories()
+        })
+    }
     // Cargar la información de los productos y convertir en un json
     const portfolio = await Portfolio.findById(req.params.id).lean()
     // Cargar la información de las categorias
@@ -81,11 +109,16 @@ const renderEditPortafolioForm = async(req,res)=>{
 
 
 
-// MÉTODO PARA ACTUALIZAR EN LA BDD LO CAPTURADO EN EL FORM 
+// MÉTODO PARA ACTUALIZAR EN LA BDD LO CAPTURADO EN EL FORM
 const updatePortafolio = async(req,res)=>{
+    if (isDemo) {
+        store.updateProduct(req.params.id, req.body)
+        return res.redirect('/portafolios')
+    }
+
     const portfolio = await Portfolio.findById(req.params.id).lean()
     if(portfolio._id != req.params.id) return res.redirect('/portafolios')
-    
+
     // Verificar si el usuario quiere actualizar la imagen o solo los campos extras
     if(req.files?.image) {
         if(!(req.files?.image)) return res.send("Se requiere una imagen")
@@ -95,6 +128,7 @@ const updatePortafolio = async(req,res)=>{
             title:req.body.title || portfolio.name,
             category: req.body.category || portfolio.category,
             description:req.body.description || portfolio.description,
+            price: req.body.price || portfolio.price,
             image : {
             public_id:imageUpload.public_id,
             secure_url:imageUpload.secure_url
@@ -104,8 +138,8 @@ const updatePortafolio = async(req,res)=>{
         await Portfolio.findByIdAndUpdate(req.params.id,data)
     }
     else{
-        const {title,category,description}= req.body
-        await Portfolio.findByIdAndUpdate(req.params.id,{title,category,description})
+        const {title,category,description,price}= req.body
+        await Portfolio.findByIdAndUpdate(req.params.id,{title,category,description,price})
     }
     res.redirect('/portafolios')
 }
@@ -117,8 +151,12 @@ const updatePortafolio = async(req,res)=>{
 
 
 
-// MÉTODO PARA ELIMINAR EN LA BDD 
+// MÉTODO PARA ELIMINAR EN LA BDD
 const deletePortafolio = async(req,res)=>{
+    if (isDemo) {
+        store.deleteProduct(req.params.id)
+        return res.redirect('/portafolios')
+    }
 
     // Utilizar el método findByIdAndDelete
     const portafolio = await Portfolio.findByIdAndDelete(req.params.id)

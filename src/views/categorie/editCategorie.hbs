@@ -25,18 +25,18 @@
                     <input type="hidden" name="_method" value="PUT">
 
                     <!-- Name input-->
-                    <div class="form-floating mb-3">
+                    <div class="mb-3">
+                        <label for="name" class="form-label fw-bold">Nombre de la Categoría</label>
                         <input class="form-control" id="name" type="text"
                             placeholder="Ingresa el nombre de la categoria..." required name="name"
                             value="{{category.name}}" />
-                        <label for="name">Nombre de la Categoría</label>
                     </div>
 
                     <!-- Image URL input-->
-                    <div class="form-floating mb-3">
-                        <input class="form-control" id="imageUrl" type="text" placeholder="Ingresa la URL..." required
-                            name="imageUrl" value="{{category.imageUrl}}" />
-                        <label for="imageUrl">URL de la Imagen</label>
+                    <div class="mb-3">
+                        <label for="imageUrl" class="form-label fw-bold">URL de la Imagen</label>
+                        <input class="form-control" id="imageUrl" type="text" placeholder="https://..."
+                            {{#unless isDemo}}required{{/unless}} name="imageUrl" value="{{category.imageUrl}}" />
                     </div>
 
                     <!-- Submit Button-->

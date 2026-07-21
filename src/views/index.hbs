@@ -52,9 +52,15 @@
                     <div class="modal-body">
                         <div id="cart-items"></div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        <button id="checkout-button" class="btn btn-primary">Notificar la compra</button>
+                    <div class="modal-footer d-flex justify-content-between align-items-center">
+                        <div class="cart-total-wrapper">
+                            <span class="text-muted text-uppercase small">Total</span>
+                            <span id="cart-total" class="fw-bold fs-4 ms-2">$0.00</span>
+                        </div>
+                        <div>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Seguir comprando</button>
+                            <button id="checkout-button" class="btn btn-primary">Finalizar compra</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -92,27 +98,18 @@
             </div>
         </div>
 
-        {{!-- Renderizar todos los productos --}}
+        {{!-- Renderizar todos los productos agrupados por categoría --}}
         {{#each portfoliosByCategory}}
-        <div class="custom-body">
-            <div class="wrap animate pop">
-                <div class="overlay">
-                    <div class="overlay-content animate slide-left delay-2">
-                        <h1 class="animate slide-left pop delay-4">{{name}}</h1>
-                    </div>
-                    <div class="image-content animate slide delay-5" style="background-image: url('{{imageUrl}}');">
-                    </div>
-                    <div class="dots animate">
-                        <div class="dot animate slide-up delay-6"></div>
-                        <div class="dot animate slide-up delay-7"></div>
-                        <div class="dot animate slide-up delay-8"></div>
-                    </div>
-                </div>
-                <div class="text">
-                    {{>portfolios }}
+        <section class="category-block">
+            <div class="category-header">
+                <img class="category-thumb" src="{{imageUrl}}" alt="{{name}}">
+                <div>
+                    <h3 class="category-title">{{name}}</h3>
+                    <p class="category-count mb-0">{{portfolios.length}} productos</p>
                 </div>
             </div>
-        </div>
+            {{>portfolios }}
+        </section>
         {{/each}}
 
 

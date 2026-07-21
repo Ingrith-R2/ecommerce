@@ -35,7 +35,9 @@ app.engine('.hbs', engine({
     partialsDir: path.join(app.get('views'), 'partials'), // 3
     extname: '.hbs', // 4
     helpers:{
-        eq: (a,b)=> a === b
+        eq: (a,b)=> a === b,
+        // Formatear un precio como moneda: 24.9 -> $24.90
+        money: (value)=> `$${Number(value || 0).toFixed(2)}`
     }
 }))
 // Establecer el motor de plantillas y su extensión
@@ -66,21 +68,25 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 // Variables globales
+const { isDemo } = require('./demo/mode')
 app.use((req, res, next) => {
     res.locals.user = req.user?.name || null
+    // Permite que las vistas adapten los formularios en modo demo
+    res.locals.isDemo = isDemo
     next()
 })
 
-// Rutas 
+// Archivos estáticos
+app.use(express.static(path.join(__dirname, 'public')))
+
+// Rutas
+app.use(require('./routers/demo.routes'))
 app.use(require('./routers/index.routes'))
 app.use(require('./routers/portafolio.routes'))
 app.use(require('./routers/user.routes'))
 app.use(require('./routers/compra.routes'))
 app.use(require('./routers/cart.routes'))
 app.use(require('./routers/categorie.routes'))
-
-// Archivos estáticos
-app.use(express.static(path.join(__dirname, 'public')))
 
 // Exportar la variable app
 module.exports = app

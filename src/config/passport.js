@@ -1,11 +1,36 @@
 // Importar passport
 const passport = require('passport')
-// Importar el modelo 
+// Importar el modelo
 const User = require('../models/User')
+// Modo demo
+const { isDemo } = require('../demo/mode')
+const { demoUser } = require('../demo/store')
 
 
-// Establecer la estrategia 
+// Establecer la estrategia
 const LocalStrategy = require('passport-local').Strategy
+
+
+// En modo demo se valida contra un usuario de prueba, sin base de datos
+if (isDemo) {
+    passport.use(new LocalStrategy({
+        usernameField: 'email',
+        passwordField: 'password'
+    }, (email, password, done) => {
+        // done(null, false) hace que passport use failureRedirect en lugar de
+        // lanzar un error 500 como haría done('mensaje')
+        if (email !== demoUser.email || password !== demoUser.password) {
+            return done(null, false)
+        }
+        return done(null, demoUser)
+    }))
+
+    passport.serializeUser((user, done) => done(null, user._id))
+    passport.deserializeUser((id, done) => done(null, id === demoUser._id ? demoUser : null))
+
+    module.exports = passport
+    return
+}
 
 
 // Configuración de la estrategia

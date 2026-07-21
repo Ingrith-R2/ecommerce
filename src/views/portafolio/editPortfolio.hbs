@@ -13,20 +13,21 @@
         <!-- Portfolio Section Form-->
         <div class="row justify-content-center">
             <div class="col-lg-8 col-xl-7">
-                <form action="/portafolio/edit/{{portfolio._id}}?_method=PUT" method="POST" class="d-inline"
+                <form action="/portafolio/edit/{{portfolio._id}}?_method=PUT" method="POST"
                     enctype="multipart/form-data">
 
                     <input type="hidden" name="_method" value="PUT">
 
                     <!-- Title input-->
-                    <div class="form-floating mb-3">
-                        <input class="form-control" id="title" type="text" placeholder="Enter your title..." required
-                            name="title" value="{{portfolio.title}}" />
-                        <label for="title">Nombre del Producto</label>
+                    <div class="mb-3">
+                        <label for="title" class="form-label fw-bold">Nombre del Producto</label>
+                        <input class="form-control" id="title" type="text" required name="title"
+                            value="{{portfolio.title}}" />
                     </div>
 
                     <!-- Category select-->
-                    <div>
+                    <div class="mb-3">
+                        <label for="category" class="form-label fw-bold">Categoría</label>
                         <select class="form-select" id="category" required name="category">
                             <option value="" disabled>Selecciona una categoría</option>
                             {{#each categories}}
@@ -36,29 +37,37 @@
                         </select>
                     </div>
 
-                    <!-- Image input-->
-                    <div class="form-floating mb-3">
-                        <input class="form-control" id="image" type="file" placeholder="Select your imagen..."
-                            name="image" />
-                        <label for="image">Imagen del producto </label>
+                    <!-- Price input-->
+                    <div class="mb-3">
+                        <label for="price" class="form-label fw-bold">Precio (USD)</label>
+                        <input class="form-control" id="price" type="number" step="0.01" min="0" placeholder="0.00"
+                            required name="price" value="{{portfolio.price}}" />
                     </div>
 
+                    <!-- Image input-->
+                    {{#unless isDemo}}
+                    <div class="mb-3">
+                        <label for="image" class="form-label fw-bold">Imagen del producto</label>
+                        <input class="form-control" id="image" type="file" name="image" />
+                        <div class="form-text">Déjalo vacío para conservar la imagen actual.</div>
+                    </div>
+                    {{/unless}}
+
                     <!-- Description input-->
-                    <div class="form-floating mb-3">
-                        <textarea class="form-control" id="description" type="text"
-                            placeholder="Enter your message here..." style="height: 10rem" required
+                    <div class="mb-3">
+                        <label for="description" class="form-label fw-bold">Descripción del producto</label>
+                        <textarea class="form-control" id="description" rows="4" required
                             name="description">{{portfolio.description}}</textarea>
-                        <label for="description">Descripción del producto</label>
                     </div>
 
                     <!-- Submit Button-->
                     <div class="text-start">
-                        <button class="btn btn-primary btn-xl d-block w-100" type="submit">Guardar Prodcuto</button>
+                        <button class="btn btn-primary btn-xl d-block w-100" type="submit">Guardar Producto</button>
                     </div>
                 </form>
                 <div class="text-end mt-3">
                     <a href="/portafolios" class="text-decoration-none">
-                        <button class="btn btn-secondary btn-xl d-block w-100 h-10" type="submit">Cancelar</button>
+                        <button class="btn btn-secondary btn-xl d-block w-100" type="button">Cancelar</button>
                     </a>
                 </div>
             </div>

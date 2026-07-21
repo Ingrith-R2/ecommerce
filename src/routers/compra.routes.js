@@ -1,53 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const MongoClient = require('mongodb').MongoClient;
+const mongoose = require('mongoose');
 require('dotenv').config();
 
-const url = process.env.MONGODB_URI
-const dbName = 'portafolio'
-
-if (!url) {
-    console.error('');
-    process.exit(1);
-}
-
-let db;
-MongoClient.connect(url, { useUnifiedTopology: true }, (err, client) => {
-    if (err) {
-        console.error('Error al conectar a la base de datos:', err);
-        return;
-    }
-    db = client.db(dbName);
-    console.log('Conectado a la base de datos', dbName);
-
-    // Verificar y crear la colección si no existe
-    db.listCollections({ name: 'purchases' }).toArray((err, collections) => {
-        if (err) {
-            console.error('Error al listar colecciones:', err);
-            return;
-        }
-        if (collections.length === 0) {
-            db.createCollection('purchases', (err, res) => {
-                if (err) {
-                    console.error('Error al crear la colección:', err);
-                    return;
-                }
-                console.log('Colección "purchases" creada');
-            });
-        } else {
-            console.log('La colección "purchases" ya existe');
-        }
-    });
-});
+const { isDemo } = require('../demo/mode');
 
 // Ruta para manejar la compra
-router.post('/compra', (req, res) => {
-    if (!db) {
-        console.error('Base de datos no está disponible');
-        res.status(500).send('Error interno del servidor');
-        return;
-    }
-
+router.post('/compra', async (req, res) => {
     const { title, quantity } = req.body;
 
     if (!title || !quantity) {
@@ -55,14 +14,19 @@ router.post('/compra', (req, res) => {
         return;
     }
 
-    db.collection('purchases').insertOne({ title, quantity }, (err, result) => {
-        if (err) {
-            console.error('Error al guardar la compra:', err);
-            res.status(500).send('Error al guardar la compra');
-        } else {
-            res.send(`Gracias por tu compra de ${quantity} unidad(es) de ${title}`);
-        }
-    });
+    // En modo demo no se persiste nada: se confirma la compra igualmente
+    if (isDemo) {
+        res.send(`Gracias por tu compra de ${quantity} unidad(es) de ${title}`);
+        return;
+    }
+
+    try {
+        await mongoose.connection.collection('purchases').insertOne({ title, quantity });
+        res.send(`Gracias por tu compra de ${quantity} unidad(es) de ${title}`);
+    } catch (error) {
+        console.error('Error al guardar la compra:', error);
+        res.status(500).send('Error al guardar la compra');
+    }
 });
 
 module.exports = router;

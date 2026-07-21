@@ -3,7 +3,7 @@
 <section class="page-section mt-5" id="login">
     <div class="container">
         <!-- Contact Section Heading-->
-        <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Todos mis Prodcutos</h2>
+        <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Todos mis Productos</h2>
         <!-- Icon Divider-->
         <div class="divider-custom">
             <div class="divider-custom-line"></div>
@@ -18,7 +18,7 @@
                 <div class="container">
                     <div class="text-end mb-3">
                         <a href="/portafolio/add" class="text-decoration-none">
-                            <button class="btn btn-success btn-xl" type="submit">Agregar nueva Prodcuto</button>
+                            <button class="btn btn-success btn-xl" type="submit">Agregar nuevo Producto</button>
                         </a>
                     </div>
                     <div class="row">
@@ -29,7 +29,10 @@
                                 <div class="card-body">
                                     <h5 class="card-title text-decoration-underline">{{title}}</h5>
                                     <p class="card-text">{{description}}</p>
-                                    <small class="text-muted">{{category}}</small>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">{{category}}</small>
+                                        <span class="fw-bold fs-5 text-primary">{{money price}}</span>
+                                    </div>
                                 </div>
                                 <div class="card-footer">
                                     <a href="/portafolio/edit/{{_id}}" class="btn btn-warning btn-sm">Editar</a>

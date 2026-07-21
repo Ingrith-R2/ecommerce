@@ -1,13 +1,15 @@
 const Portfolio = require('../models/Portfolio')
 const Category = require('../models/Category')
+const { isDemo } = require('../demo/mode')
+const store = require('../demo/store')
 
 
 // Método para listar todos los productos
 const renderIndex = async (req, res) => {
     try {
-        // Consultar todos los productos y categorías
-        const portfolios = await Portfolio.find().lean();
-        const categories = await Category.find().lean();
+        // En modo demo se usan los datos de ejemplo en lugar de la base de datos
+        const portfolios = isDemo ? store.getProducts() : await Portfolio.find().lean();
+        const categories = isDemo ? store.getCategories() : await Category.find().lean();
 
         // Agrupando los productos por categoría
         const portfoliosByCategory = categories.map(category => ({
@@ -22,7 +24,7 @@ const renderIndex = async (req, res) => {
     }
 };
 
-// Exportación de la función 
+// Exportación de la función
 module.exports = {
     renderIndex
 }

@@ -16,6 +16,11 @@ const portfolioSchema = new Schema({
         type:String,
         require:true
     },
+    price:{
+        type:Number,
+        required:true,
+        default:0
+    },
     user:{
         type:String,
         required:true
